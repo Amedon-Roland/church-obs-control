@@ -1,36 +1,166 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Church Stream Control
 
-## Getting Started
+A modern web-based control interface for OBS Studio, designed specifically for church live streaming operations.
 
-First, run the development server:
+![Church Stream Control](public/screenshot.png)
 
+## Overview
+
+Church Stream Control is a user-friendly web application that provides a streamlined interface for managing OBS Studio during church live streams. It offers essential controls for streaming, recording, scene switching, and source management, all in a clean and responsive interface.
+
+## Features
+
+- **Live Streaming Controls**
+  - One-click stream start/stop
+  - Visual status indicators
+  - Error handling and status feedback
+
+- **Recording Management**
+  - Easy recording controls
+  - Status monitoring
+  - Safe recording state management
+
+- **Scene Management**
+  - Quick scene switching
+  - Active scene highlighting
+  - Real-time scene list updates
+
+- **Source Controls**
+  - Toggle source visibility
+  - Visual status indicators
+  - Automatic source list updates
+  - Multi-source management
+
+- **Responsive Design**
+  - Mobile-friendly interface
+  - Adaptive layouts
+  - Touch-optimized controls
+
+## Technical Requirements
+
+- OBS Studio 28.0.0 or later
+- OBS WebSocket 5.0.0 or later
+- Node.js 16.0.0 or later
+- npm or yarn package manager
+
+## Installation
+
+1. **Clone the Repository**
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/yourusername/church-stream-control.git
+cd church-stream-control
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. **Install Dependencies**
+```bash
+npm install
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+3. **Configure OBS WebSocket**
+   - Open OBS Studio
+   - Navigate to `Tools` > `WebSocket Server Settings`
+   - Enable WebSocket server
+   - Set port to `4455` (default)
+   - **For security in production, enable authentication**
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+4. **Start Development Server**
+```bash
+npm run dev
+```
 
-## Learn More
+5. **Access the Application**
+   - Open your browser
+   - Navigate to [http://localhost:3000](http://localhost:3000)
 
-To learn more about Next.js, take a look at the following resources:
+## Usage Guide
+### Initial Setup
+1. Ensure OBS Studio is running
+2. Verify WebSocket connection is established
+3. Configure your scenes and sources in OBS
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Streaming
+- Click "Start Streaming" to begin broadcast
+- Monitor stream status via button color
+- Click "Stop Streaming" to end broadcast
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Recording
+- Use "Start Recording" for local recording
+- Button turns red when recording is active
+- Click "Stop Recording" to finish
 
-## Deploy on Vercel
+### Scene Management
+- Select scenes from the Active Scene panel
+- Current scene is highlighted
+- Scene list updates automatically
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Source Control
+- Toggle sources on/off with source buttons
+- Visual indicators show current state
+- Changes reflect immediately in OBS
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Troubleshooting
+### Common Issues
+1. **Connection Failed**
+   - Verify OBS is running
+   - Check WebSocket server settings
+   - Confirm port `4455` is available
+
+2. **Scenes Not Appearing**
+   - Restart OBS
+   - Refresh the web interface
+   - Check browser console for errors
+
+3. **Controls Not Responding**
+   - Verify WebSocket connection
+   - Check OBS permissions
+   - Clear browser cache
+
+### Error Messages
+- **"WebSocket Connection Failed"**: Check OBS and network settings
+- **"Scene Switch Failed"**: Verify scene exists in OBS
+- **"Recording Error"**: Check disk space and permissions
+
+## Development
+### Project Structure
+```plaintext
+church-stream-control/
+├── src/
+│   ├── app/
+│   │   └── page.tsx       # Main application component
+│   ├── components/
+│   │   └── ui/           # UI components
+│   └── services/
+│       └── obsService.ts  # OBS WebSocket service
+├── public/
+└── package.json
+```
+
+### Technology Stack
+- Next.js 13+
+- React 18
+- TypeScript
+- Tailwind CSS
+- OBS WebSocket API
+
+## Security Considerations
+- Enable WebSocket authentication in production
+- Use secure HTTPS connections
+- Implement user authentication if needed
+- Regular security updates
+
+## Contributing
+1. Fork the repository
+2. Create a feature branch
+3. Submit a pull request
+4. Follow coding standards
+5. Include tests when applicable
+
+## License
+© 2024 Church Stream Control. All rights reserved.
+
+## Credits
+Made with ❤️ by Roland Tech
+
+## Support
+For technical support or feature requests, please contact:
+[Your Contact Information]

@@ -1,101 +1,178 @@
-import Image from "next/image";
+'use client';
+
+import { Button } from '@/components/ui/button';
+import OBSService from '@/services/obsService';
+import { useEffect, useState } from 'react';
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const [isStreaming, setIsStreaming] = useState(false);
+  const [isRecording, setIsRecording] = useState(false);
+  const [scenes, setScenes] = useState<any[]>([]);
+  const [currentScene, setCurrentScene] = useState('');
+  const [sources, setSources] = useState<any[]>([]);
+  const obs = OBSService.getInstance();
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  useEffect(() => {
+    const initOBS = async () => {
+      await obs.connect();
+      const sceneList = await obs.getScenes();
+      setScenes(sceneList);
+      
+      if (sceneList.length > 0 && sceneList[0]?.sceneName) {
+        const firstSceneName = String(sceneList[0].sceneName);
+        setCurrentScene(firstSceneName);
+        const sceneSources = await obs.getSceneSources(firstSceneName);
+        setSources(sceneSources);
+      }
+      
+      const streamStatus = await obs.getStreamingStatus();
+      setIsStreaming(streamStatus);
+      
+      const recordStatus = await obs.getRecordingStatus();
+      setIsRecording(recordStatus);
+    };
+
+    initOBS();
+  }, []);
+
+  const handleStream = async () => {
+    try {
+      if (isStreaming) {
+        await obs.stopStreaming();
+      } else {
+        await obs.startStreaming();
+      }
+      setIsStreaming(!isStreaming);
+    } catch (error) {
+      console.error('Streaming error:', error);
+    }
+  };
+
+  const handleRecord = async () => {
+    try {
+      if (isRecording) {
+        await obs.stopRecording();
+      } else {
+        await obs.startRecording();
+      }
+      setIsRecording(!isRecording);
+    } catch (error) {
+      console.error('Recording error:', error);
+    }
+  };
+
+  const handleSceneChange = async (sceneName: string) => {
+    try {
+      await obs.setCurrentScene(sceneName);
+      setCurrentScene(sceneName);
+      const sceneSources = await obs.getSceneSources(sceneName);
+      setSources(sceneSources);
+    } catch (error) {
+      console.error('Scene change error:', error);
+    }
+  };
+
+  const toggleSourceVisibility = async (sourceName: string) => {
+    try {
+      const isVisible = await obs.getSourceVisibility(currentScene, sourceName);
+      await obs.setSourceVisibility(currentScene, sourceName, !isVisible);
+      
+      // Refresh sources list
+      const sceneSources = await obs.getSceneSources(currentScene);
+      setSources(sceneSources);
+    } catch (error) {
+      console.error('Source visibility toggle error:', error);
+    }
+  };
+
+  return (
+    <main className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100">
+      {/* Header with Logo */}
+      <div className="bg-white shadow-sm">
+        <div className="max-w-4xl mx-auto py-4 px-8 flex flex-col items-center text-center gap-4">
+          <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center">
+            <span className="text-white text-2xl font-bold">C</span>
+          </div>
+          <div>
+            <h1 className="text-2xl font-bold text-gray-800">Church Stream Control</h1>
+            <p className="text-sm text-gray-500">Broadcasting Management System</p>
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+      </div>
+
+      {/* Main Content */}
+      <div className="max-w-4xl mx-auto p-4 sm:p-8 space-y-6 sm:space-y-8">
+        {/* Status Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+          <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6 border border-gray-100">
+            <h2 className="text-lg font-semibold mb-4 text-gray-700 text-center">Broadcast Controls</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+              <Button
+                variant={isStreaming ? "destructive" : "default"}
+                size="lg"
+                onClick={handleStream}
+                className="h-20 sm:h-24 text-lg sm:text-xl shadow-sm"
+              >
+                {isStreaming ? 'Stop Streaming' : 'Start Streaming'}
+              </Button>
+              
+              <Button
+                variant={isRecording ? "destructive" : "default"}
+                size="lg"
+                onClick={handleRecord}
+                className="h-20 sm:h-24 text-lg sm:text-xl shadow-sm"
+              >
+                {isRecording ? 'Stop Recording' : 'Start Recording'}
+              </Button>
+            </div>
+          </div>
+
+          {/* Scene Selection */}
+          <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6 border border-gray-100">
+            <h2 className="text-lg font-semibold mb-4 text-gray-700 text-center">Active Scene</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {scenes.map((scene) => (
+                <Button
+                  key={scene.sceneName}
+                  variant={currentScene === scene.sceneName ? "secondary" : "outline"}
+                  onClick={() => handleSceneChange(scene.sceneName)}
+                  className="h-14 sm:h-16 shadow-sm text-sm sm:text-base"
+                >
+                  {scene.sceneName}
+                </Button>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Sources Panel */}
+        <div className="bg-white rounded-xl shadow-sm p-4 sm:p-6 border border-gray-100">
+          <h2 className="text-lg font-semibold mb-4 text-gray-700 text-center">Source Controls</h2>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 sm:gap-3">
+            {sources.map((source) => (
+              <Button
+                key={source.sourceName}
+                variant={source.sceneItemEnabled ? "default" : "outline"}
+                onClick={() => toggleSourceVisibility(source.sourceName)}
+                className="h-14 sm:h-16 shadow-sm"
+              >
+                <div className="text-center">
+                  <div className="text-xs sm:text-sm">{source.sourceName}</div>
+                  <div className="text-xs opacity-60">
+                    {source.sceneItemEnabled ? 'Visible' : 'Hidden'}
+                  </div>
+                </div>
+              </Button>
+            ))}
+          </div>
+        </div>
+
+        {/* Footer */}
+        <div className="text-center text-sm text-gray-500 pt-4">
+          <div>© {new Date().getFullYear()} Church Stream Control. All rights reserved.</div>
+          <div className="mt-1">Made with ❤️ by Roland Tech</div>
+        </div>
+      </div>
+    </main>
   );
 }
