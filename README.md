@@ -47,8 +47,8 @@ Church Stream Control is a user-friendly web application that provides a streaml
 
 1. **Clone the Repository**
 ```bash
-git clone https://github.com/yourusername/church-stream-control.git
-cd church-stream-control
+git https://github.com/Amedon-Roland/church-obs-control.git
+cd church-obs-control
 ```
 
 2. **Install Dependencies**
@@ -123,7 +123,7 @@ npm run dev
 ## Development
 ### Project Structure
 ```plaintext
-church-stream-control/
+church-obs-control/
 ├── src/
 │   ├── app/
 │   │   └── page.tsx       # Main application component
@@ -156,11 +156,11 @@ church-stream-control/
 5. Include tests when applicable
 
 ## License
-© 2024 Church Stream Control. All rights reserved.
+© 2025 Church Obs Control. All rights reserved.
 
 ## Credits
 Made with ❤️ by Roland Tech
 
 ## Support
 For technical support or feature requests, please contact:
-[Your Contact Information]
+[rolandamedon@gmail.com - 00228 96322545 ]
