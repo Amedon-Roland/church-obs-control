@@ -1,4 +1,4 @@
-# Church Stream Control
+# Church Obs Control
 
 A modern web-based control interface for OBS Studio, designed specifically for church live streaming operations.
 
@@ -6,7 +6,7 @@ A modern web-based control interface for OBS Studio, designed specifically for c
 
 ## Overview
 
-Church Stream Control is a user-friendly web application that provides a streamlined interface for managing OBS Studio during church live streams. It offers essential controls for streaming, recording, scene switching, and source management, all in a clean and responsive interface.
+Church Obs Control is a user-friendly web application that provides a streamlined interface for managing OBS Studio during church live streams. It offers essential controls for streaming, recording, scene switching, and source management, all in a clean and responsive interface.
 
 ## Features
 
