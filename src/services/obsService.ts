@@ -15,12 +15,18 @@ class OBSService {
     return OBSService.instance;
   }
 
-  async connect() {
+  async connect(server = 'localhost', port = '4455', password = '') {
     try {
-      await this.obs.connect('ws://localhost:4455', '');
+      const serverUrl = `ws://${server}:${port}`;
+      await this.obs.connect(serverUrl, password);
       console.log('Connected to OBS');
+      return { success: true };
     } catch (error) {
       console.error('Failed to connect to OBS:', error);
+      return { 
+        success: false, 
+        error: error instanceof Error ? error.message : 'Unknown connection error' 
+      };
     }
   }
 
